@@ -50,6 +50,19 @@ public class Encryptor
         }
     }
 
+    public void fillBlockDeCrypt(String str)
+    {
+        int count = 0;
+        for (int col = 0; col < letterBlock[0].length; col++)
+        {
+            for (int row = 0; row < letterBlock.length; row++)
+            {
+                letterBlock[row][col] = str.substring(count, count + 1);
+                count++;
+            }
+        }
+    }
+
     /** Extracts encrypted string from letterBlock in column-major order.
      *
      *   Precondition: letterBlock has been filled
@@ -69,6 +82,19 @@ public class Encryptor
         return encryptStr;
     }
 
+    public String decryptBlock()
+    {
+        String decryptStr = "";
+        for (int row = 0; row < letterBlock.length; row++)
+        {
+            for (int col = 0; col < letterBlock[0].length; col++)
+            {
+                decryptStr += letterBlock[row][col];
+            }
+        }
+        return decryptStr;
+    }
+
     /** Encrypts a message.
      *
      *  @param message the string to be encrypted
@@ -83,7 +109,7 @@ public class Encryptor
         {
            fillBlock(message.substring(filled));
            encyrptMessaged += encryptBlock();
-           filled += numCols + numRows;
+           filled += numCols * numRows;
         }
         return encyrptMessaged;
     }
@@ -112,6 +138,22 @@ public class Encryptor
      */
     public String decryptMessage(String encryptedMessage)
     {
-        return null;
+        int filled = 0;
+        String decyrptMessaged = "";
+        while (encryptedMessage.length() > filled)
+        {
+            fillBlockDeCrypt(encryptedMessage.substring(filled));
+            decyrptMessaged += decryptBlock();
+            filled += numCols * numRows;
+        }
+
+        int count = 0;
+        while (decyrptMessaged.substring(decyrptMessaged.length() - count - 1, decyrptMessaged.length() - count).equals("A"))
+        {
+            count++;
+        }
+
+        decyrptMessaged = decyrptMessaged.substring(0, decyrptMessaged.length() - count);
+        return decyrptMessaged;
     }
 }
